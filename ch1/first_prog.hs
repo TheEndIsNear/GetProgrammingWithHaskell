@@ -12,10 +12,10 @@ toPart :: String -> String
 toPart recipient = "Dear " ++ recipient ++ ",\n"
 
 bodyPart :: String -> String
-bodyPart bookTitle = "Thanks for buying " ++ bookTitle ++ "\n."
+bodyPart bookTitle = "Thanks for writing about " ++ bookTitle ++ "\n."
 
 fromPart :: String -> String
-fromPart author = "Thanks,\n" ++ author
+fromPart author = "I will return an answer to your question as soon as I can.\n" ++ author
 
 createEmail :: String -> String -> String -> String
 createEmail recipient bookTitle author = toPart recipient ++
