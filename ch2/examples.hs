@@ -18,7 +18,7 @@ double ::Num a => a -> a
 double = (*) 2
 
 square :: Num a => a -> a
-square x = (^) x 2
+square = flip (^) 2
 
 function n = if even n
                 then n - 2

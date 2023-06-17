@@ -4,10 +4,10 @@ ifEven myFunction x = if even x
                          then myFunction x
                          else x
 
-ifEvenInc = ifEven (\x -> x + 1)
-ifEvenDouble = ifEven (\x -> x * 2)
-ifEvenSquare = ifEven (\x -> (^) x 2)
-ifEvenCubed = ifEven (\x -> x ^ 3)
+ifEvenInc = ifEven $ (+) 1
+ifEvenDouble = ifEven $ (*) 2
+ifEvenSquare = ifEven $ flip (^) 2
+ifEvenCubed = ifEven $ flip (^) 3
 
 names = [("Ian", "Curtis"),
          ("Bernard", "Sumber"),
@@ -51,3 +51,10 @@ getLocationFunction location = case location of
   "sf" -> sfOffice
   "reno" -> renoOffice
   _ -> (\name -> fst name ++ " " ++ snd name)
+
+flipBinaryArguments :: (a -> b -> c) -> (b -> a -> c)
+flipBinaryArguments binaryFunction x y = binaryFunction y x
+
+addressLetterV2 = flipBinaryArguments addressLetter
+
+addressLetterNY = addressLetterV2 "ny"
