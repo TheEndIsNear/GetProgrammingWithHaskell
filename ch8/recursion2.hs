@@ -31,4 +31,6 @@ fib 1 = 1
 fib n = fib(n-1) + fib(n-2)
 
 fastFib :: Int -> Int -> Int -> Int
-fastFib n1 n2 counter = undefined
+fastFib n1 n2 0 = n1
+fastFib 1 1 counter = fastFib 2 1 (counter - 3)
+fastFib n1 n2 counter = fastFib (n1+n2) n1 (counter - 1)
