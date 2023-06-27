@@ -6,4 +6,4 @@ isPalindrome xs = (==) sentence reverseSentence
   where sentence = map toLower $ filter (/= ' ') xs
         reverseSentence = reverse sentence
 
-harmonic n = foldr (+) $ map ((/) 1) [1..n]
+harmonic n = foldr (+) 0 $ map ((/) 1) [1..n]
