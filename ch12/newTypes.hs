@@ -34,6 +34,19 @@ showName :: Name -> String
 showName (Name f l) = f ++ " " ++ l
 showName (NameWithMiddle f m l) = f ++ " " ++ m ++ " " ++ l
 
+showSex :: Sex -> String
+showSex Male = "Male"
+showSex Female = "Female"
+
+showAge :: Age -> String
+showAge = show
+
+showHeight :: Height -> String
+showHeight height = show height ++ "in."
+
+showWeight :: Weight -> String
+showWeight weight = show weight ++ "lbs."
+
 sexInitial :: Sex -> Char
 sexInitial Male = 'M'
 sexInitial Female = 'F'
@@ -67,6 +80,9 @@ canDonateTo (BloodType A _) (BloodType A _) = True
 canDonateTo (BloodType B _) (BloodType B _) = True
 canDonateTo _  _ = False -- otherwise
 
+canDonate :: Patient -> Patient -> Bool
+canDonate p1 p2 = canDonateTo (bloodType p1) (bloodType p2)
+
 name1 = Name "Jerome" "Salinger"
 name2 = NameWithMiddle "Jerome" "David" "Salinger"
 
@@ -83,3 +99,14 @@ jackieSmith = Patient { name = Name "Jackie" "Smith"
                       , height = 62
                       , weight = 115
                       , bloodType = BloodType O Neg }
+
+patientSummary :: Patient -> String
+patientSummary patient =
+  "********\n"
+  ++ "Patient Name: " ++ showName (name patient) ++ "\n"
+  ++ "Sex: " ++ showSex (sex patient) ++ "\n"
+  ++ "Age: " ++ showAge (age patient) ++ "\n"
+  ++ "Height: " ++ showHeight (height patient) ++ "\n"
+  ++ "Weight: " ++ showWeight (weight patient) ++ "\n"
+  ++ "Blood Type: " ++ showBloodType (bloodType patient)
+  
