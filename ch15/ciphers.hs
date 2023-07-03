@@ -6,6 +6,24 @@ rotN alphabetSize c = toEnum rotation
         offset = fromEnum c + halfAphabet
         rotation = offset `mod` alphabetSize
 
+rotNdecoder :: (Bounded a, Enum a) => Int -> a -> a
+rotNdecoder n c = toEnum rotation
+  where halfN = n `div` 2
+        offset = if even n
+                 then fromEnum c + halfN
+                 else 1 + fromEnum c + halfN
+        rotation = offset `mod` n
+
+rotEncoder :: String -> String
+rotEncoder = map rotChar
+  where alphaSize = 1 + fromEnum (maxBound :: Char)
+        rotChar = rotN alphaSize
+
+rotDecoder :: String -> String
+rotDecoder = map rotCharDecoder
+  where alphaSize = 1 + fromEnum (maxBound :: Char)
+        rotCharDecoder = rotNdecoder alphaSize
+
 largestCharNumber :: Int
 largestCharNumber = fromEnum (maxBound :: Char)
 
@@ -33,15 +51,7 @@ threeLetterEncoder = map rot3l
   where alphaSize = 1 + fromEnum (maxBound :: ThreeLetterAlphabet)
         rot3l = rotN alphaSize
 
-rotNdecoder :: (Bounded a, Enum a) => Int -> a -> a
-rotNdecoder n c = toEnum rotation
-  where halfN = n `div` 2
-        offset = if even n
-                 then fromEnum c + halfN
-                 else 1 + fromEnum c + halfN
-        rotation = offset `mod` n
-
 threeLetterDecoder :: [ThreeLetterAlphabet] -> [ThreeLetterAlphabet]
 threeLetterDecoder = map rot3lDecoder
   where alphaSize = 1 + fromEnum (maxBound :: ThreeLetterAlphabet)
-        rot3lDecoder = rotNdecoder alphaSize
+        rot4lDecoder = rotNdecoder alphaSize
