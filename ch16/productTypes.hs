@@ -6,7 +6,7 @@ type BandName = String
 data Book = Book {
      author :: Creator
    , isbn   :: String
-   , title  :: String
+   , bookTitle  :: String
    , year   :: Int
    , bookPrice  :: Double
    }
@@ -19,9 +19,15 @@ data VinylRecord = VinylRecord {
    }
   
 data CollectibleToy = CollectibleToy {
-     name :: String
+     name        :: String
+   , toyDescription :: String
+   , toyPrice    :: Double
+   }
+
+data Pamphlet = Pamphlet {
+     title :: String
    , description :: String
-   , toyPrice :: Double
+   , contact :: String
    }
 
 data Name = Name FirstName LastName
@@ -38,6 +44,7 @@ data Artist = Person Name | Band BandName deriving Show
 data StoreItem = BookItem Book 
   | RecordItem VinylRecord 
   | ToyItem CollectibleToy
+  | PamphletItem Pamphlet
 
 hpLoveCraft :: Creator
 hpLoveCraft = AuthorCreator
@@ -48,6 +55,7 @@ price :: StoreItem -> Double
 price (BookItem book) = bookPrice book
 price (RecordItem record) = recordPrice record
 price (ToyItem toy) = toyPrice toy
+price (PamphletItem _) = 0.0
 
 madeBy :: StoreItem -> String
 madeBy (BookItem book) = show (author book)
