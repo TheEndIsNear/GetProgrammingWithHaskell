@@ -36,9 +36,7 @@ data Name = Name FirstName LastName
   | FirstNameWithTwoInits FirstName Char Char deriving Show
 
 data Creator = AuthorCreator Author | Artist Creator Artist deriving Show
-
 data Author = Author Name deriving Show
-
 data Artist = Person Name | Band BandName deriving Show
 
 data StoreItem = BookItem Book 
@@ -61,3 +59,21 @@ madeBy :: StoreItem -> String
 madeBy (BookItem book) = show (author book)
 madeBy (RecordItem record) = show (artist record)
 madeBy _ = "unknown"
+
+data Circle = Circle {radius :: Double}
+data Square = Square {side :: Double}
+data Rectange = Rectange {l :: Double, w :: Double}
+
+data Shape = CircleShape Circle  
+  | SquareShape Square
+  | RectangeShape Rectange
+
+perimeter :: Shape -> Double
+perimeter (CircleShape circle) = 2 * pi * radius circle 
+perimeter (SquareShape square) = 4 * side square
+perimeter (RectangeShape rectangle) = 2 * (l rectangle + w rectangle)
+
+area :: Shape -> Double
+area (CircleShape circle) = pi * radius circle ^ 2
+area (SquareShape square) = side square ^ 2
+area (RectangeShape rectangle) = l rectangle * w rectangle
