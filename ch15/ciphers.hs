@@ -2,6 +2,13 @@ data FourLetterAlphabet = L1 | L2 | L3 | L4 deriving (Show, Enum, Bounded)
 
 type Bits = [Bool]
 
+class Cipher a where
+  encode :: a -> String -> String
+  decode :: a -> String -> String
+
+data Rot = Rot
+data OneTimePad = OTP String
+
 rotN :: (Bounded a, Enum a) => Int -> a -> a
 rotN alphabetSize c = toEnum rotation
   where halfAphabet = alphabetSize `div` 2
@@ -98,3 +105,40 @@ bitsToInt bits = sum (map (\x -> 2^snd x) trueLocations)
 
 bitsToChar :: Bits -> Char
 bitsToChar = toEnum . bitsToInt 
+
+myPad :: String
+myPad = "Shhhhhh"
+
+myPlainText :: String
+myPlainText = "Haskell"
+
+applyOTP' :: String -> String -> [Bits]
+applyOTP' pad plaintext = map (\pair ->
+                                (fst pair) `xor` (snd pair))
+                          (zip padBits plaintextBits)
+  where padBits = map charToBits pad
+        plaintextBits = map charToBits plaintext
+
+applyOTP :: String -> String -> String
+applyOTP pad plaintext = map bitsToChar bitList
+  where bitList = applyOTP' pad plaintext
+
+encoderDecoder :: String -> String
+encoderDecoder = applyOTP myPad
+
+instance Cipher Rot where
+  encode Rot text = rotEncoder text
+  decode Rot text = rotDecoder text
+
+instance Cipher OneTimePad where
+  encode (OTP pad) text = applyOTP pad text
+  decode (OTP pad) text = applyOTP pad text
+
+myOTP :: OneTimePad
+myOTP = OTP (cycle [minBound .. maxBound])
+
+prng :: Int -> Int -> Int -> Int -> Int
+prng a b maxNumber seed = (a*seed + b) `mod` maxNumber
+
+examplePRNG :: Int -> Int
+examplePRNG = prng 1337 7 100
