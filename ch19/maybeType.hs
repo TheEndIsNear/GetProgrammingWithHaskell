@@ -2,6 +2,13 @@ import qualified Data.Map as Map
 import Data.List
 
 data Organ = Heart | Brain | Kidney | Spleen deriving (Show, Eq)
+data Container = Vat Organ | Cooler Organ | Bag Organ
+data Location = Lab | Kitchen | Bathroom deriving Show
+
+instance Show Container where
+  show (Vat organ) = show organ ++ " in a vat"
+  show (Cooler organ) = show organ ++ " in a cooler"
+  show (Bag organ) = show organ ++ " in a bag"
 
 organs :: [Organ]
 organs = [Heart,Heart,Brain,Spleen,Spleen,Kidney]
@@ -50,3 +57,29 @@ cleanList = intercalate ", " organList
 numOrZero :: Num a => Maybe a -> a
 numOrZero Nothing = 0
 numOrZero (Just x) = x
+
+organToContainer :: Organ -> Container
+organToContainer Brain = Vat Brain
+organToContainer Heart = Cooler Heart
+organToContainer organ = Bag organ
+
+placeInLocation :: Container -> (Location, Container)
+placeInLocation (Vat a) = (Lab, Vat a)
+placeInLocation (Cooler a) = (Lab, Cooler a)
+placeInLocation (Bag a) = (Kitchen, Bag a)
+
+process :: Organ -> (Location, Container)
+process organ = placeInLocation (organToContainer organ)
+
+report :: (Location,Container) -> String
+report (location,container) = show container ++
+                              " in the " ++
+                              show location
+
+processAndReport :: Maybe Organ -> String
+processAndReport (Just organ) = report (process organ)
+processAndReport Nothing = "error, id not found"
+
+processRequest :: Int -> Map.Map Int Organ -> String
+processRequest id catalog = processAndReport organ
+  where organ = Map.lookup id catalog
