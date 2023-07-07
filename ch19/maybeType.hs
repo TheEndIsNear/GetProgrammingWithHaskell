@@ -29,6 +29,9 @@ getDrawerContents :: [Int] -> Map.Map Int Organ -> [Maybe Organ]
 getDrawerContents ids catalog = map getContents ids
   where getContents = \id -> Map.lookup id catalog
 
+emptyDrawers :: [Maybe Organ] -> Int
+emptyDrawers drawerContents = length $ filter (== Nothing) drawerContents
+
 availableOrgans :: [Maybe Organ]
 availableOrgans = getDrawerContents possibleDrawers organCatalog
 
@@ -83,3 +86,8 @@ processAndReport Nothing = "error, id not found"
 processRequest :: Int -> Map.Map Int Organ -> String
 processRequest id catalog = processAndReport organ
   where organ = Map.lookup id catalog
+
+maybeMap :: (a -> b) -> [Maybe a] -> [Maybe b]
+maybeMap _ [] = []
+maybeMap f (Nothing:xs) = Nothing : maybeMap f xs
+maybeMap f (Just a:xs) = (:) (Just $ f a) (maybeMap f xs)
