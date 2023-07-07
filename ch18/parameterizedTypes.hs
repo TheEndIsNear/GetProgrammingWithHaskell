@@ -1,5 +1,9 @@
+import qualified Data.Map as Map
+
 data Box a = Box a deriving Show
 data Triple a = Triple a a a deriving Show
+data List a = Empty | Cons a (List a) deriving Show
+data Organ = Heart | Brain | Kidney | Spleen deriving (Show, Eq)
 
 type Point3D = Triple Double
 type FullName = Triple String
@@ -34,3 +38,43 @@ toList (Triple x y z) = [x,y,z]
 
 transform :: (a -> a) -> Triple a -> Triple a
 transform f (Triple x y z) = Triple (f x) (f y) (f z)
+
+builtinEx1 :: [Int]
+builtinEx1 = 1:2:3:[]
+
+ourListEx1 :: List Int
+ourListEx1 = Cons 1 (Cons 2 (Cons 3 Empty))
+
+builtinEx2 :: [Char]
+builtinEx2 = 'c':'a':'t':[]
+
+ourListEx2 :: List Char
+ourListEx2 = Cons 'a' (Cons 'a' (Cons 't' Empty))
+
+ourMap :: (a -> b) -> List a -> List b
+ourMap _ Empty = Empty
+ourMap f (Cons a rest) = Cons (f a) (ourMap f rest)
+
+itemCount1 :: (String,Int)
+itemCount1 =  ("Erasers",25)
+
+itemCount2 :: (String,Int)
+itemCount2 = ("Pencils",25)
+
+itemCount3 :: (String,Int)
+itemCount3 = ("Pens",13)
+
+itemInventory :: [(String,Int)]
+itemInventory = [itemCount1,itemCount2,itemCount3]
+
+organs :: [Organ]
+organs = [Heart,Heart,Brain,Spleen,Spleen,Kidney]
+
+ids :: [Int]
+ids = [2,7,13,14,21,24]
+
+orgainPairs :: [(Int,Organ)]
+orgainPairs = zip ids organs
+
+organCatalog :: Map.Map Int Organ
+organCatalog = Map.fromList orgainPairs
