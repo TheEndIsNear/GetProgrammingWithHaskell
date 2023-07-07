@@ -19,7 +19,8 @@ myAny testFunc = foldr (||) False . map testFunc
 instance Semigroup Integer where
   (<>) x y = x + y
 
-data Color = Red 
+data Color = Clear
+  | Red 
   | Yellow
   | Blue
   | Green
@@ -28,6 +29,8 @@ data Color = Red
   | Brown deriving (Show, Eq)
 
 instance Semigroup Color where
+  (<>) Clear _ = Clear
+  (<>) _ Clear = Clear
   (<>) Red Blue = Purple
   (<>) Blue Red = Purple
   (<>) Yellow Blue = Green
@@ -40,9 +43,12 @@ instance Semigroup Color where
            | all (`elem` [Red,Yellow,Orange]) [a,b] = Orange
            | otherwise = Brown 
 
+instance Monoid Color where
+  mempty = Clear
+  mappend = (<>)
 
-data Events = Events [String]
-data Probs = Probs [Double]
+newtype Events = Events [String]
+newtype Probs = Probs [Double]
 data PTable = PTable Events Probs
 
 instance Semigroup Events where
