@@ -25,3 +25,5 @@ cabal.project.local~
 roll
 pizza
 fib
+sum
+lazy_sum
