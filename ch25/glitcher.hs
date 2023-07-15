@@ -8,9 +8,13 @@ main = do
   args <- getArgs
   let filename = head args
   imageFile <- BC.readFile filename
-  glitched <- randomSortSection imageFile
+  glitched1 <- randomSortSection imageFile
+  glitched2 <- randomSortSection glitched1
+  glitched3 <- randomSortSection glitched2
+  glitched4 <- randomSortSection glitched3
+  glitched5 <- randomReplaceByte glitched4
   let glitchedFileName = mconcat ["glitched_",filename]
-  BC.writeFile glitchedFileName glitched
+  BC.writeFile glitchedFileName glitched5
   print "All done"
 
 intToChar :: Int -> Char
