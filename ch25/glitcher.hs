@@ -9,12 +9,7 @@ main = do
   args <- getArgs
   let filename = head args
   imageFile <- BC.readFile filename
-  glitched <- foldM (\bytes fun -> fun bytes) imageFile 
-                                              [randomReplaceByte
-                                              ,randomSortSection
-                                              ,randomReplaceByte
-                                              ,randomSortSection
-                                              ,randomReplaceByte]
+  glitched <- foldM (\bytes fun -> fun bytes) imageFile glitchActions
   let glitchedFileName = mconcat ["glitched_",filename]
   BC.writeFile glitchedFileName glitched
   print "All done"
@@ -51,3 +46,10 @@ randomSortSection bytes = do
   let bytesLength = BC.length bytes
   start <- randomRIO (0,bytesLength - sectionSize)
   return (sortSection start sectionSize bytes)
+
+glitchActions :: [BC.ByteString -> IO BC.ByteString]
+glitchActions = [randomReplaceByte
+                ,randomSortSection
+                ,randomReplaceByte
+                ,randomSortSection
+                ,randomReplaceByte]
