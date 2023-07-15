@@ -8,7 +8,7 @@ main = do
   args <- getArgs
   let filename = head args
   imageFile <- BC.readFile filename
-  glitched <- randomReplaceByte imageFile
+  glitched <- randomSortSection imageFile
   let glitchedFileName = mconcat ["glitched_",filename]
   BC.writeFile glitchedFileName glitched
   print "All done"
@@ -32,3 +32,16 @@ randomReplaceByte bytes = do
   location <- randomRIO (1,bytesLength)
   charVal <- randomRIO (0,255)
   return (replaceByte location charVal bytes)
+
+sortSection :: Int -> Int -> BC.ByteString -> BC.ByteString
+sortSection start size bytes = mconcat [before,changed,after]
+  where (before,rest) = BC.splitAt start bytes
+        (target,after) = BC.splitAt size rest
+        changed = BC.reverse $ BC.sort target
+
+randomSortSection :: BC.ByteString -> IO BC.ByteString
+randomSortSection bytes = do
+  let sectionSize = 25
+  let bytesLength = BC.length bytes
+  start <- randomRIO (0,bytesLength - sectionSize)
+  return (sortSection start sectionSize bytes)
