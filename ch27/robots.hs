@@ -71,3 +71,7 @@ leftArmIO = return leftArm
 
 htmlSnippet :: IO Html
 htmlSnippet = renderHtml <$> leftArmIO
+
+retrieveCost :: Int -> Maybe Double
+retrieveCost key = price
+  where price = cost <$> Map.lookup key partsDB
