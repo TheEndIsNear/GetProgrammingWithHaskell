@@ -25,6 +25,19 @@ haversine coords1 coords2 = earthRadius * c
         c = 2 * atan2 (sqrt a) (sqrt (1-a))
         earthRadius = 3961.0
 
+haversineMaybe :: Maybe LatLong -> Maybe LatLong -> Maybe Double
+haversineMaybe (Just coord1) (Just coord2) = Just $ haversine coord1 coord2
+haversineMaybe _ _ = Nothing
+
+haversineIO :: IO LatLong -> IO LatLong -> IO Double
+haversineIO coord1 coord2 = do
+  c1 <- coord1
+  c2 <- coord2
+  return $ haversine c1 c2
+
+haversineIO2 :: IO LatLong -> IO LatLong -> IO Double
+haversineIO2 coord1 coord2 = haversine <$> coord1 <*> coord2
+
 printDistance :: Maybe Double -> IO ()
 printDistance Nothing = putStrLn "Error, invalid city entered"
 printDistance (Just distance) = putStrLn (show distance ++ " miles")
