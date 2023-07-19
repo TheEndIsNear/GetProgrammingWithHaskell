@@ -4,8 +4,8 @@ example = (*) ((+) 2 4) 6
 allFmap :: Applicative f => (a -> b) -> f a -> f b
 allFmap f val = f <$> val
 
---exampleMaybe :: Maybe Int
---exampleMaybe =  (*) ((+) <$> 2 <*> 4) 6
+exampleMaybe :: Maybe Int
+exampleMaybe = pure (*) <*> (pure (+) <*> pure 2 <*> pure 4) <*> pure 6
 
 beersList :: [Int]
 beersList = [6,12]
