@@ -30,6 +30,10 @@ data Course = Course
   , courseTitle :: String
   , teacher :: Int } deriving Show
 
+data Enrollment = Enrollment
+  { student :: Int
+  , course :: Int } deriving Show
+
 students :: [Student]
 students = [ Student 1 Senior (Name "Audre" "Lorde")
            , Student 2 Junior (Name "Leslie" "Silko")
@@ -46,6 +50,18 @@ courses :: [Course]
 courses = [ Course 101 "French" 100
           , Course 201 "English" 200
           , Course 301 "German" 200]
+
+enrollments :: [Enrollment]
+enrollments = [ Enrollment 1 101
+              , Enrollment 2 101
+              , Enrollment 2 201
+              , Enrollment 3 101
+              , Enrollment 4 201
+              , Enrollment 4 101
+              , Enrollment 5 301
+              , Enrollment 5 101
+              , Enrollment 6 101
+              , Enrollment 6 301]
 
 _select :: Monad m => (a -> b) -> m a -> m b
 _select prop vals = do
@@ -117,3 +133,30 @@ maybeQuery2 :: HINQ Maybe (Teacher,Course) Name
 maybeQuery2 = HINQ (_select $ teacherName . fst)
               (_join possibleTeacher missingCourse teacherId teacher)
               (_where ((== "French") .courseTitle . snd))
+
+studentEnrollmentsQ = HINQ_ (_select (\(st,en) ->
+                                (studentName st, course en)))
+                            (_join students enrollments studentId student)
+
+studentEnrollments :: [(Name,Int)]
+studentEnrollments = runHINQ studentEnrollmentsQ
+
+englishStudentsQ = HINQ (_select $ fst . fst)
+                        (_join studentEnrollments
+                               courses
+                               snd
+                               courseId)
+                        (_where ((== "English") . courseTitle . snd))
+
+englishStudents :: [Name]
+englishStudents = runHINQ englishStudentsQ
+
+getEnrollments :: String -> [Name]
+getEnrollments courseName = runHINQ courseQuery
+  where courseQuery = HINQ (_select $ fst . fst)
+                        (_join studentEnrollments
+                               courses
+                               snd
+                               courseId)
+                        (_where ((== courseName) . courseTitle . snd))
+
