@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Primes
+--import Primes
 
 main :: IO ()
 main = return ()
