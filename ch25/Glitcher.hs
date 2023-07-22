@@ -1,18 +1,8 @@
-import Control.Monad
-import System.Environment
+module Glitcher(randomReplaceByte, randomSortSection, randomReverseSection) where 
+
 import System.Random
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
-
-main :: IO ()
-main = do
-  args <- getArgs
-  let filename = head args
-  imageFile <- BC.readFile filename
-  glitched <- foldM (\bytes fun -> fun bytes) imageFile glitchActions
-  let glitchedFileName = mconcat ["glitched_",filename]
-  BC.writeFile glitchedFileName glitched
-  print "All done"
 
 intToChar :: Int -> Char
 intToChar int = toEnum safeChar
@@ -60,10 +50,3 @@ randomReverseSection bytes = do
   start <- randomRIO (0,bytesLength - sectionSize)
   return (reverseSection start sectionSize bytes)
 
-glitchActions :: [BC.ByteString -> IO BC.ByteString]
-glitchActions = [randomReplaceByte
-                ,randomSortSection
-                ,randomReplaceByte
-                ,randomSortSection
-                ,randomReverseSection
-                ,randomReplaceByte]
