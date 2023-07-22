@@ -3,11 +3,20 @@ module Lib
     , preprocess
     ) where
 
-import Data.Char (isPunctuation)
-import Data.Text as T
+import Data.Char (isPunctuation, isSpace, toLower)
+import qualified Data.Text as T
+
+stripWhiteSpace :: T.Text -> T.Text
+stripWhiteSpace = T.filter (not . isSpace)
+
+stripPunctuation :: T.Text -> T.Text
+stripPunctuation = T.filter (not . isPunctuation)
+
+toLowerCase :: T.Text -> T.Text
+toLowerCase = T.map toLower
 
 preprocess :: T.Text -> T.Text
-preprocess = T.filter (not . isPunctuation)
+preprocess = stripWhiteSpace . stripPunctuation .toLowerCase
 
 isPalindrome :: T.Text -> Bool
 isPalindrome text = cleanText == T.reverse cleanText
