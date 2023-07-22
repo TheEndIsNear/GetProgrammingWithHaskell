@@ -46,6 +46,10 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - http-lesson
+    - bytestring
+    - http-conduit
+    default-extensions: 
+    - OverloadedStrings
 
 tests:
   http-lesson-test:
