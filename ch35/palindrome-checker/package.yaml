@@ -1,8 +1,8 @@
 name:                palindrome-checker
 version:             0.1.0.0
-github:              "githubuser/palindrome-checker"
+github:              "theendisnear/palindrome-checker"
 license:             BSD3
-author:              "Author name here"
+author:              "Matt Willy"
 maintainer:          "example@example.com"
 copyright:           "2023 Author name here"
 
@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- text
 
 ghc-options:
 - -Wall
@@ -32,6 +33,11 @@ ghc-options:
 - -Wmissing-home-modules
 - -Wpartial-fields
 - -Wredundant-constraints
+- -Werror
+
+default-extensions: 
+-  OverloadedStrings
+
 
 library:
   source-dirs: src
@@ -46,6 +52,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - palindrome-checker
+    - text
 
 tests:
   palindrome-checker-test:
