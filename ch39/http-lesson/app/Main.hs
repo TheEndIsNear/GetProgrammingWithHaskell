@@ -4,10 +4,13 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.ByteString.Lazy as L
 import qualified Data.ByteString.Lazy.Char8 as LC
+import System.Environment
 import Network.HTTP.Simple
 
 main :: IO ()
 main = do
+  token <- BC.pack <$> getEnv "NOAA_TOKEN"
+  let request = buildRequest token noaaHost requestType apiPath
   response <- httpLBS request
   let status = getResponseStatusCode response
   if status == 200
@@ -17,14 +20,14 @@ main = do
       L.writeFile "data.json" jsonBody
     else print "request failed with error"
 
-myToken :: BC.ByteString
-myToken = "<INSERT TOKEN HERE>" -- replace with your token
-
 noaaHost :: BC.ByteString
 noaaHost = "www.ncdc.noaa.gov"
 
 apiPath :: BC.ByteString
 apiPath = "/cdo-web/api/v2/datasets"
+
+requestType :: BC.ByteString
+requestType = "GET"
 
 buildRequest :: BC.ByteString -> BC.ByteString -> BC.ByteString
              -> BC.ByteString -> Request
@@ -36,5 +39,3 @@ buildRequest token host method path = setRequestMethod method
                                 $ setRequestPort 443
                                 $ defaultRequest
 
-request :: Request
-request = buildRequest myToken noaaHost "GET" apiPath
