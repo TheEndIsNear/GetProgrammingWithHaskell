@@ -1,16 +1,16 @@
 import Lib
-
 import Test.QuickCheck
+import Test.QuickCheck.Instances
+import Data.Char(isPunctuation)
+import Data.Text as T
 
-import Data.Char 
-
-prop_punctuationInvarient :: String -> Bool
+prop_punctuationInvarient :: T.Text -> Bool
 prop_punctuationInvarient text = preprocess text ==
                                  preprocess noPuncText
-  where noPuncText = filter (not . isPunctuation) text
+  where noPuncText = T.filter (not . isPunctuation) text
 
-prop_reversetInvariant :: String -> Bool
-prop_reversetInvariant text = isPalindrome text == (isPalindrome . reverse) text
+prop_reversetInvariant :: T.Text -> Bool
+prop_reversetInvariant text = isPalindrome text == (isPalindrome . T.reverse) text
 
 main :: IO ()
 main = do

@@ -4,10 +4,11 @@ module Lib
     ) where
 
 import Data.Char (isPunctuation)
+import Data.Text as T
 
-preprocess :: String -> String
-preprocess = filter (not . isPunctuation)
+preprocess :: T.Text -> T.Text
+preprocess = T.filter (not . isPunctuation)
 
-isPalindrome :: String -> Bool
-isPalindrome text = cleanText == reverse cleanText
+isPalindrome :: T.Text -> Bool
+isPalindrome text = cleanText == T.reverse cleanText
   where cleanText = preprocess text
