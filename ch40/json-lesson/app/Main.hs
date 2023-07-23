@@ -5,69 +5,53 @@ import Data.Text as T
 import Data.ByteString.Lazy as B
 import Data.ByteString.Lazy.Char8 as BC
 import GHC.Generics
+import Control.Monad (forM_)
 
-data Book = Book 
-  { title :: T.Text
-  , author :: T.Text
-  , year :: Int
-  } deriving (Show, Generic)
+data NOAAResult = NOAAResult {
+    uid :: T.Text,
+    mindate :: T.Text,
+    maxdate :: T.Text,
+    name :: T.Text,
+    datacoverage :: Double,
+    resultId :: T.Text
+} deriving Show
 
-instance FromJSON Book
-instance ToJSON Book
-
-data Name = Name
-  { firstName :: T.Text
-  , lastName :: T.Text
-  } deriving (Show, Generic)
-
-instance FromJSON Name
-instance ToJSON Name
-
-myBook :: Book
-myBook = Book { author = "Will Kurt"
-              , title = "Learn Haskell"
-              , year = 2017
-              }
-
-rawJSON :: BC.ByteString
-rawJSON = "{\"author\":\"Serhii Plokhy\",\"title\":\"The Russo-Ukrainian War\",\"year\":2023}"
-
-wrongJSON :: BC.ByteString
-wrongJSON = "{\"writer\":\"Serhii Plokhy\",\"title\":\"The Russo-Ukrainian War\",\"year\":2023}"
-
-bookFromJSON :: Maybe Book
-bookFromJSON = decode rawJSON
-
-bookFromWrongJSON :: Maybe Book
-bookFromWrongJSON = decode wrongJSON
-
-myBookJSON :: BC.ByteString
-myBookJSON = encode myBook
-
-sampleError :: BC.ByteString
-sampleError = "{\"message\":\"oops!\",\"error\": 123}"
-
-data ErrorMessage = ErrorMessage
-  { message :: T.Text
-  , errorCode :: Int
-  } deriving Show
-
-instance FromJSON ErrorMessage where
+instance FromJSON NOAAResult where
   parseJSON (Object v) =
-    ErrorMessage <$> v .: "message"
-                <*> v .: "error"
+    NOAAResult <$> v .: "uid"
+               <*> v .: "mindate"
+               <*> v .: "maxdate"
+               <*> v .: "name"
+               <*> v .: "datacoverage"
+               <*> v .: "id"
 
-instance ToJSON ErrorMessage where
-  toJSON (ErrorMessage message errorCode) =
-    object [ "message" .= message
-           , "error" .= errorCode
-           ]
+data Resultset = Resultset
+  { offset :: Int
+  , count :: Int
+  , limit :: Int
+  } deriving (Show, Generic)
+instance FromJSON Resultset
 
-sampleErrorMessage :: Maybe ErrorMessage
-sampleErrorMessage = decode sampleError
+newtype Metadata = Metadata {
+    resultset :: Resultset
+  } deriving (Show, Generic)
+instance FromJSON Metadata
 
-anErrorMessage :: ErrorMessage
-anErrorMessage = ErrorMessage "Everything is Okay" 0
+data NOAAResponse = NOAAResponse
+  { metadata :: Metadata
+  , results :: [NOAAResult]
+  } deriving (Show, Generic)
+
+instance FromJSON NOAAResponse
+
+printResults :: Maybe [NOAAResult] -> IO ()
+printResults Nothing = print "error loading data"
+printResults (Just results) = do
+  forM_ results (print . name)
 
 main :: IO ()
-main = print "Hi"
+main = do
+  jsonData <- B.readFile "data.json"
+  let noaaResponse = decode jsonData :: Maybe NOAAResponse
+  let noaaResults = results <$> noaaResponse
+  printResults noaaResults
