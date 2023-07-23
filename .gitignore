@@ -45,3 +45,4 @@ user
 echo
 Main
 data.json
+*.db
