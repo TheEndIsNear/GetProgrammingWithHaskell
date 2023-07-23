@@ -49,6 +49,14 @@ addUser userName = do
         (Only userName)
       print "user added"
 
+addTool :: String -> String -> Day -> Int -> IO ()
+addTool toolName description lastReturned timesBorrowed = do
+  withConn "tools.db" $
+    \conn -> do
+      execute conn "INSERT INTO tools (name,description,lastReturned,timesBorrowed) VALUES (?,?,?,?)"
+        (toolName,description,lastReturned,timesBorrowed)
+      print "tool added"
+
 checkout :: Int -> Int -> IO ()
 checkout userId toolID = do
   withConn "tools.db" $
@@ -144,6 +152,15 @@ promptAndAddUser = do
   userName <- getLine
   addUser userName
 
+promptAndAddTool :: IO ()
+promptAndAddTool = do
+  print "Enter new tool name"
+  toolName <- getLine
+  print "Enter new tool description"
+  toolDescription <- getLine
+  currentDay <- utctDay <$> getCurrentTime
+  addTool toolName toolDescription currentDay 0
+
 promptAndCheckout :: IO ()
 promptAndCheckout = do
   print "Enter the id of the user"
@@ -163,6 +180,7 @@ performCommand command
   | command == "users" = printUsers >> main
   | command == "tools" = printTools >> main
   | command == "adduser" = promptAndAddUser >> main
+  | command == "addtool" = promptAndAddTool >> main
   | command == "checkout" = promptAndCheckout >> main
   | command == "checkin" = promptAndCheckin >> main
   | command == "in" = printAvailable >> main
